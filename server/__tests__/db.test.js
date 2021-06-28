@@ -59,10 +59,10 @@ describe('db functions', () => {
 
 	beforeEach(() => {
 		for (let { title, items } of testData) {
-			const newBoard = new Board(title);
+			const newBoard = new Board(title, db);
 			const newBoardItems = [];
 			for (let { title, description } of items) {
-				let newItem = new Item(title, description);
+				let newItem = new Item(title, description, newBoardItems);
 				newBoardItems.push(newItem);
 			}
 			newBoard.setItems(newBoardItems);
