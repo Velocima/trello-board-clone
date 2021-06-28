@@ -1,8 +1,11 @@
 class Board {
 	constructor(title) {
 		this.title = title;
+		this.items = [];
 	}
-	allBoards = db || testDB;
+	setItems(itemsArr) {
+		this.items = itemsArr;
+	}
 }
 
 module.exports = Board;
