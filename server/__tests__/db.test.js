@@ -76,4 +76,11 @@ describe('db functions', () => {
 			title: 'Test Title',
 		};
 	});
+
+	test('should have a title', () => {
+		expect(testDB.title).toBeTruthy();
+	});
+	test('should have an array of boards', () => {
+		expect(testDB.boards).toBeInstanceOf(Array);
+	});
 });
