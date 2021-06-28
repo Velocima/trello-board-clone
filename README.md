@@ -27,6 +27,7 @@ A simple trello clone.
 
 ```js
 // db
+
 {
     boards: [
         {
@@ -37,7 +38,7 @@ A simple trello clone.
     ]
 }
 
-// Item object:
+// item object:
 
 {
     id: uID,
