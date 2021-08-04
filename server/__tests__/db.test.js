@@ -116,6 +116,24 @@ describe('db functions', () => {
 		test('should contain an items array', () => {
 			expect(boards[randomBoardsIndex].items).toBeInstanceOf(Array);
 		});
+
+		test('findById should return expected board', () => {
+			const boardToFind = boards[randomBoardsIndex];
+			expect(Board.findById(boardToFind.id, db)).toEqual(boardToFind);
+		});
+
+		test('create method should return new board and add it to database.', () => {
+			const testTitle = 'Testing';
+			const newBoard = Board.create(testTitle, db);
+			expect(newBoard.title).toBe(testTitle);
+			expect(db.boards.includes(newBoard)).toEqual(true);
+		});
+
+		test('deleteById should remove the board from the db', () => {
+			const boardToDelete = boards[randomBoardsIndex];
+			Board.deleteById(boardToDelete.id, db);
+			expect(db.boards.includes(boardToDelete)).toEqual(false);
+		});
 	});
 
 	describe('Items', () => {
