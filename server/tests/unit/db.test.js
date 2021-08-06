@@ -1,4 +1,4 @@
-const Board = require('../models/board.js');
+const Board = require('../../models/board.js');
 const Item = require('../models/item.js');
 
 describe('db functions', () => {

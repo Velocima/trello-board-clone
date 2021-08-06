@@ -1,0 +1,16 @@
+services:
+  server:
+    container_name: kanban_test_api
+    environment:
+      - NODE_ENV=test
+    command: 'bash -c "npm install && npm run dev"'
+    tty: true
+  db:
+    container_name: kanban_test_db
+    volumes:
+      - 'test_db:/var/lib/postgresql/data'
+volumes:
+  test_db:
+networks:
+  default:
+    name: kanban_test
