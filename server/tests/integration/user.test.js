@@ -1,3 +1,5 @@
+const { validate } = require('uuid');
+
 describe('User endpoints', () => {
 	let api;
 
@@ -20,12 +22,62 @@ describe('User endpoints', () => {
 			await resetTestDB();
 		});
 
-		it('should return user information', (done) => {
+		it('GET to /user/:id should return status 200 with user information', (done) => {
 			request(api)
-				.get('/users/d939bc6e-495d-457a-a997-aab91c4e080a')
+				.get(`/users/${testUser.id}`)
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.expect({ user: testUser }, done);
+		});
+
+		it('PUT to /user/:id should return status 200 user information', (done) => {
+			request(api)
+				.put(`/users/${testUser.id}`)
+				.send({ password: 'new password' })
+				.set('Content-Type', 'application/json')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.expect({ user: testUser }, done);
+		});
+
+		it('DELETE to /user/:id should return status 204', (done) => {
+			request(api).delete(`/users/${testUser.id}`).expect(204, done);
+		});
+
+		it('POST to /user/register should return status 201 user information', (done) => {
+			const newUserData = {
+				name: 'new user',
+				password: 'superPassword',
+				email: 'newuser@example.com',
+			};
+			const { name, email } = newUserData;
+			request(api)
+				.post('/users/')
+				.send(newUserData)
+				.set('Content-Type', 'application/json')
+				.expect('Content-Type', /json/)
+				.expect(201)
+				.expect((res) => {
+					if (validate(res.body.id)) {
+						res.body.id = true;
+					}
+				})
+				.expect({ user: { name, id: true, email } }, done);
+		});
+
+		it('POST to /user/login should return status 200', (done) => {
+			request(api)
+				.post(`/users/login`)
+				.send({ email: testUser.email, password: 'test1' })
+				.set('Content-Type', 'application/json')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.expect((res) => {
+					if (res.body.token.includes('Bearer ')) {
+						res.body.token = true;
+					}
+				})
+				.expect({ token: true, ok: true }, done);
 		});
 	});
 
@@ -34,8 +86,8 @@ describe('User endpoints', () => {
 			await resetTestDB();
 		});
 
-		it('should return 404 for invalid id', (done) => {
-			request(api).get('/users/1').expect(404).expect({ error: 'User does not exist' }, done);
+		it('GET to user/:id should return 404 for invalid id', (done) => {
+			request(api).get('/users/1').expect(404).expect({ error: 'User not found' }, done);
 		});
 	});
 });
