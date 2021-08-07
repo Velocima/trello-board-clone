@@ -7,9 +7,9 @@
 		"start": "node index.js",
 		"dev": "nodemon -L index.js",
 		"test": "jest --setupFiles ./tests/config/config.js --watchAll --detectOpenHandles --silent --runInBand --verbose",
-		"unitTests": "jest --testPathPattern=/unit/ --watchAll --verbose",
-		"integrationTests": "jest --testPathPattern=/integration/ --watchAll --verbose",
-		"componentTests": "jest --testPathPattern=/component/ --watchAll --verbose",
+		"unitTests": "jest --testPathPattern=/unit/ --setupFiles ./tests/config/config.js --watchAll --detectOpenHandles --verbose",
+		"integrationTests": "jest --testPathPattern=/integration/ --setupFiles ./tests/config/config.js --watchAll --detectOpenHandles --verbose",
+		"componentTests": "jest --testPathPattern=/component/ --setupFiles ./tests/config/config.js --watchAll --detectOpenHandles --verbose",
 		"coverage": "jest --testPathPattern=/unit/ --coverage"
 	},
 	"keywords": [],

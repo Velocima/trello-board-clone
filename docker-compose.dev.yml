@@ -10,7 +10,6 @@ services:
     container_name: kanban_dev_db
     volumes:
       - 'postgresdata:/var/lib/postgresql/data'
-      - './db:/docker-entrypoint-initdb.d/:ro'
 volumes:
   postgresdata:
 networks:

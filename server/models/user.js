@@ -17,6 +17,9 @@ class User {
 					[id, name, email, password]
 				);
 				const user = new User(userData.rows[0]);
+				if (!user.id || !user.email || !user.name) {
+					throw new Error('User could not be created');
+				}
 				resolve(user);
 			} catch (err) {
 				reject(err);

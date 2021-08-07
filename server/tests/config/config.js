@@ -5,7 +5,7 @@ const request = require('supertest');
 const app = require('../../app');
 
 // import reset query
-const reset = fs.readFileSync(__dirname + '/test_seeds.sql').toString();
+const reset = fs.readFileSync(__dirname + '/reset.sql').toString();
 
 // enable resetting of db between tests
 const resetTestDB = () => {

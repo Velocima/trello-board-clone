@@ -21,3 +21,5 @@ services:
       - POSTGRES_PASSWORD=secretpassword
       - POSTGRES_USER=max
       - POSTGRES_DB=kanban
+    volumes:
+      - './db:/docker-entrypoint-initdb.d/:ro'

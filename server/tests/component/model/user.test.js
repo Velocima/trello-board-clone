@@ -1,30 +1,20 @@
 const User = require('../../../models/user');
 
-const pg = require('pg');
-jest.mock('pg');
-
 const db = require('../../../dbConfig/config');
 
 describe('User model', () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-	});
-
-	afterAll(() => {
-		jest.resetAllMocks();
-	});
-
 	describe('create', () => {
-		it('resolves with user on successful db query', async () => {
-			expect.assertions(4);
+		beforeEach(async () => {
+			await resetTestDB();
+		});
+
+		it('resolves with user', async () => {
 			let userData = {
 				name: 'test user',
 				password: 'test',
 				email: 'testuser@example.com',
 			};
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [{ ...userData, id: 'a3cb3416-8fcf-4719-8897-3f51767a578d' }],
-			});
+			expect.assertions(4);
 			const user = await User.create(userData);
 			expect(user).toHaveProperty('id');
 			expect(user).toHaveProperty('name');
@@ -36,7 +26,6 @@ describe('User model', () => {
 			try {
 				expect.assertions(1);
 				let userData = {};
-				jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('User could not be created'));
 				const data = await User.create(userData);
 			} catch (err) {
 				expect(err.message).toEqual('User could not be created');
