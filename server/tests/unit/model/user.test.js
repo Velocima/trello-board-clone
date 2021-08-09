@@ -130,4 +130,42 @@ describe('User model', () => {
 			expect(result).toBe(true);
 		});
 	});
+
+	describe('update', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('resolves with updated user on successful db query', async () => {
+			expect.assertions(1);
+			let userData = {
+				id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
+				name: 'test user',
+				password: 'test',
+				email: 'testuser@example.com',
+			};
+			jest.spyOn(db, 'query').mockResolvedValueOnce({
+				rows: [{ ...userData, password: 'updated' }],
+			});
+			const user = new User(userData);
+			const result = await user.update('updated');
+			expect(result).toBe(true);
+		});
+
+		it.each([null, '', 123])('rejects with error message on invalid password', (password) => {
+			try {
+				expect.assertions(1);
+				let userData = {
+					id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
+					name: 'test user',
+					password: 'test',
+					email: 'testuser@example.com',
+				};
+				const user = new User(userData);
+				user.update(password);
+			} catch (err) {
+				expect(err.message).toBe('Invalid argument for new password');
+			}
+		});
+	});
 });
