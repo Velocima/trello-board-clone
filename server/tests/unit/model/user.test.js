@@ -6,17 +6,17 @@ jest.mock('pg');
 const db = require('../../../dbConfig/config');
 
 describe('User model', () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-	});
-
 	afterAll(() => {
 		jest.resetAllMocks();
 	});
 
 	describe('create', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
 		it('resolves with user on successful db query', async () => {
-			expect.assertions(4);
+			expect.assertions(5);
 			let userData = {
 				name: 'test user',
 				password: 'test',
@@ -26,11 +26,11 @@ describe('User model', () => {
 				rows: [{ ...userData, id: 'a3cb3416-8fcf-4719-8897-3f51767a578d' }],
 			});
 			const user = await User.create(userData);
-			expect(user).toHaveProperty('id');
-			expect(user).toHaveProperty('name');
-			expect(user).toHaveProperty('email');
-			expect(user).toHaveProperty('password');
 			expect(user).toBeInstanceOf(User);
+			expect(user.id).toEqual('a3cb3416-8fcf-4719-8897-3f51767a578d');
+			expect(user.name).toEqual(userData.name);
+			expect(user.email).toEqual(userData.email);
+			expect(user).toHaveProperty('password');
 		});
 
 		it('rejects with error on failed db query', async () => {
