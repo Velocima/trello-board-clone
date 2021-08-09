@@ -114,4 +114,20 @@ describe('User model', () => {
 			}
 		});
 	});
+
+	describe('destroy', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('resolves with true on successful db query', async () => {
+			expect.assertions(1);
+			jest.spyOn(db, 'query').mockResolvedValueOnce({
+				rows: [{ id: 'test' }],
+			});
+			const user = new User({ id: 'test' });
+			const result = await user.destroy();
+			expect(result).toBe(true);
+		});
+	});
 });
