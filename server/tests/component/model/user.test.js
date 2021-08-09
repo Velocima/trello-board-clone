@@ -2,8 +2,6 @@ const { validate } = require('uuid');
 
 const User = require('../../../models/user');
 
-const db = require('../../../dbConfig/config');
-
 describe('User model', () => {
 	describe('create', () => {
 		const testData = {
@@ -96,11 +94,35 @@ describe('User model', () => {
 			await resetTestDB();
 		});
 
-		it('resolves with user', async () => {
-			expect.assertions(5);
+		it('resolves true on success', async () => {
+			expect.assertions(1);
 			const user = await User.show('d939bc6e-495d-457a-a997-aab91c4e080a');
-			const result = user.destroy();
+			const result = await user.destroy();
 			expect(result).toBe(true);
+		});
+	});
+
+	describe('update', () => {
+		beforeEach(async () => {
+			await resetTestDB();
+		});
+
+		it('resolves with user', async () => {
+			expect.assertions(1);
+			const user = await User.show('d939bc6e-495d-457a-a997-aab91c4e080a');
+			const oldPassword = user.password;
+			const result = await user.update('newPassword');
+			expect(result.password).not.toEqual(oldPassword);
+		});
+
+		it.each([null, '', 4])('rejects with error message with invalid password', async (password) => {
+			try {
+				expect.assertions(1);
+				const user = await User.show('d939bc6e-495d-457a-a997-aab91c4e080a');
+				const result = await user.update(password);
+			} catch (err) {
+				expect(err.message).toEqual('Invalid argument for new password');
+			}
 		});
 	});
 });
