@@ -19,7 +19,7 @@ describe('Users controller', () => {
 		jest.resetAllMocks();
 	});
 
-	describe('GET /user/:id', () => {
+	describe('show', () => {
 		beforeEach(() => {
 			jest.clearAllMocks();
 		});
@@ -37,5 +37,36 @@ describe('Users controller', () => {
 			expect(mockStatus).toHaveBeenCalledWith(404);
 			expect(mockSend).toHaveBeenCalledWith({ error: 'User not found' });
 		});
+	});
+
+	describe('update', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('returns a user with a 200 status code for valid id', async () => {
+			jest.spyOn(User, 'show').mockResolvedValueOnce(new User(testUser));
+			jest.spyOn(User.prototype, 'update').mockResolvedValueOnce(true);
+			await usersController.show({ body: { password: 'newpassword' } }, mockRes);
+			expect(mockStatus).toHaveBeenCalledWith(200);
+			expect(mockSend).toHaveBeenCalledWith(testUser);
+		});
+
+		it('returns error message with a 404 status code for invalid id', async () => {
+			jest.spyOn(User, 'show').mockRejectedValueOnce(new Error('User not found'));
+			await usersController.show({ body: { password: 'newpassword' } }, mockRes);
+			expect(mockStatus).toHaveBeenCalledWith(404);
+			expect(mockSend).toHaveBeenCalledWith({ error: 'User not found' });
+		});
+
+		it.each([{ body: {} }, { body: { password: null } }, { body: { password: '' } }])(
+			'returns error message with a 400 status code for invalid body',
+			async (reqBody) => {
+				jest.spyOn(User, 'show').mockRejectedValueOnce(new Error('User not found'));
+				await usersController.show(reqBody, mockRes);
+				expect(mockStatus).toHaveBeenCalledWith(400);
+				expect(mockSend).toHaveBeenCalledWith({ error: 'Invalid password' });
+			}
+		);
 	});
 });
