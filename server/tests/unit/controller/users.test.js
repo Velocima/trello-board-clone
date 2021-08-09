@@ -69,4 +69,26 @@ describe('Users controller', () => {
 			}
 		);
 	});
+
+	describe('destroy', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('returns a user with a 200 status code for valid id', async () => {
+			jest.spyOn(User, 'show').mockResolvedValueOnce(new User(testUser));
+			jest.spyOn(User.prototype, 'destroy').mockResolvedValueOnce(true);
+			await usersController.destroy();
+			expect(mockStatus).toHaveBeenCalledWith(204);
+			expect(mockSend).toHaveBeenCalled();
+		});
+
+		it('returns error message with a 404 status code for invalid id', async () => {
+			jest.spyOn(User, 'show').mockRejectedValueOnce(new Error('User not found'));
+			jest.spyOn(User.prototype, 'destroy').mockResolvedValueOnce(true);
+			await usersController.destroy();
+			expect(mockStatus).toHaveBeenCalledWith(404);
+			expect(mockSend).toHaveBeenCalledWith({ error: 'User not found' });
+		});
+	});
 });
