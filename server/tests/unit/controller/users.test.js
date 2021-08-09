@@ -1,6 +1,8 @@
 const User = require('../../../models/user');
 const usersController = require('../../../controllers/users');
 
+jest.mock('../../../middleware/auth', () => jest.fn((req, res, next) => next()));
+
 const mockSend = jest.fn();
 const mockJson = jest.fn();
 const mockStatus = jest.fn((code) => ({ send: mockSend, json: mockJson }));
