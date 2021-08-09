@@ -72,9 +72,8 @@ describe('User model', () => {
 		it('rejects with error message on invalid id', async () => {
 			try {
 				expect.assertions(1);
-				let userData = {};
 				jest.spyOn(db, 'query').mockRejectedValueOnce({ rows: [] });
-				const data = await User.show(userData);
+				const data = await User.show('test');
 			} catch (err) {
 				expect(err.message).toEqual('User not found');
 			}
