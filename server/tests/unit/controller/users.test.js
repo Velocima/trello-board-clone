@@ -91,4 +91,34 @@ describe('Users controller', () => {
 			expect(mockSend).toHaveBeenCalledWith({ error: 'User not found' });
 		});
 	});
+
+	describe('create', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		const newUserData = {
+			name: 'test user 1',
+			email: 'testuser1@example.com',
+			password: 'password',
+		};
+		const { name, email, password } = newUserData;
+
+		it('returns a user with a 200 status code for valid id', async () => {
+			jest.spyOn(User, 'create').mockResolvedValueOnce(new User(testUser));
+			await usersController.create(newUserData);
+			expect(mockStatus).toHaveBeenCalledWith(201);
+			expect(mockSend).toHaveBeenCalled(testUser);
+		});
+
+		it.each([
+			{ name, email },
+			{ name, password },
+			{ email, password },
+		])('returns error message with a 400 status code for missing body data', async (userData) => {
+			await usersController.create(userData);
+			expect(mockStatus).toHaveBeenCalledWith(400);
+			expect(mockSend).toHaveBeenCalledWith({ error: 'Invalid body data' });
+		});
+	});
 });
