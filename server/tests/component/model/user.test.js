@@ -90,4 +90,17 @@ describe('User model', () => {
 			}
 		});
 	});
+
+	describe('destroy', () => {
+		beforeEach(async () => {
+			await resetTestDB();
+		});
+
+		it('resolves with user', async () => {
+			expect.assertions(5);
+			const user = await User.show('d939bc6e-495d-457a-a997-aab91c4e080a');
+			const result = user.destroy();
+			expect(result).toBe(true);
+		});
+	});
 });
