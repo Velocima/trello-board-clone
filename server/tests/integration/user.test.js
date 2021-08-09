@@ -31,7 +31,7 @@ describe('User endpoints', () => {
 				.expect({ user: testUser }, done);
 		});
 
-		it('GET to user/:id should return 404 for invalid id', (done) => {
+		it('should return 404 for invalid id', (done) => {
 			request(api).get('/users/1').expect(404).expect({ error: 'User not found' }, done);
 		});
 	});
@@ -50,6 +50,24 @@ describe('User endpoints', () => {
 				.expect(200)
 				.expect({ user: testUser }, done);
 		});
+
+		it('should return 404 for invalid id', (done) => {
+			request(api)
+				.put('/users/1')
+				.send({ password: 'new password' })
+				.set('Content-Type', 'application/json')
+				.expect(404)
+				.expect({ error: 'User not found' }, done);
+		});
+
+		it('should return 400 for invalid password', (done) => {
+			request(api)
+				.put('/users/1')
+				.send()
+				.set('Content-Type', 'application/json')
+				.expect(400)
+				.expect({ error: 'Invalid new password' }, done);
+		});
 	});
 
 	describe('DELETE /user/:id', () => {
@@ -60,6 +78,10 @@ describe('User endpoints', () => {
 		it('should return status 204', (done) => {
 			request(api).delete(`/users/${testUser.id}`).expect(204, done);
 		});
+
+		it('should return 404 for invalid id', (done) => {
+			request(api).delete('/users/1').expect(404).expect({ error: 'User not found' }, done);
+		});
 	});
 
 	describe('POST /user/register ', () => {
@@ -67,13 +89,14 @@ describe('User endpoints', () => {
 			await resetTestDB();
 		});
 
+		const newUserData = {
+			name: 'new user',
+			password: 'superPassword',
+			email: 'newuser@example.com',
+		};
+		const { name, email, password } = newUserData;
+
 		it('should return status 201 user information', (done) => {
-			const newUserData = {
-				name: 'new user',
-				password: 'superPassword',
-				email: 'newuser@example.com',
-			};
-			const { name, email } = newUserData;
 			request(api)
 				.post('/users/')
 				.send(newUserData)
@@ -86,6 +109,19 @@ describe('User endpoints', () => {
 					}
 				})
 				.expect({ user: { name, id: true, email } }, done);
+		});
+
+		it.each([
+			{ password, email },
+			{ name, email },
+			{ name, password },
+		])('should return 400 for missing data', (userData, done) => {
+			request(api)
+				.post('/users/register')
+				.send(userData)
+				.set('Content-Type', 'application/json')
+				.expect(400)
+				.expect({ error: 'Missing required user data' }, done);
 		});
 	});
 
@@ -107,6 +143,19 @@ describe('User endpoints', () => {
 					}
 				})
 				.expect({ token: true, ok: true }, done);
+		});
+
+		it.each([
+			{ email: 'wrongemail@example.com', password: 'test1' },
+			{ email: testUser.email, password: 'wrongpassword' },
+			{},
+		])('should return 401 for invalid email or password', (loginData, done) => {
+			request(api)
+				.post('/users/login')
+				.send(loginData)
+				.set('Content-Type', 'application/json')
+				.expect(401)
+				.expect({ error: 'Password or email incorrect' }, done);
 		});
 	});
 });
