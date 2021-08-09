@@ -19,6 +19,7 @@ describe('User model', () => {
 			expect(user).toHaveProperty('id');
 			expect(user).toHaveProperty('name');
 			expect(user).toHaveProperty('email');
+			expect(user).toHaveProperty('password');
 			expect(user).toBeInstanceOf(User);
 		});
 
