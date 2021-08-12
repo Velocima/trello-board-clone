@@ -74,6 +74,9 @@ class User {
 	update(password) {
 		return new Promise(async (resolve, reject) => {
 			try {
+				if (!password || typeof password !== 'string') {
+					throw new Error('Invalid argument for new password');
+				}
 				const userData = await db.query(
 					'UPDATE users SET password = $1 WHERE id = $2 RETURNING id;',
 					[password, this.id]
