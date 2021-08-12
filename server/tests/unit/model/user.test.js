@@ -16,21 +16,25 @@ describe('User model', () => {
 		});
 
 		it('resolves with user on successful db query', async () => {
-			expect.assertions(5);
-			let userData = {
-				name: 'test user',
-				password: 'test',
-				email: 'testuser@example.com',
-			};
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [{ ...userData, id: 'a3cb3416-8fcf-4719-8897-3f51767a578d' }],
-			});
-			const user = await User.create(userData);
-			expect(user).toBeInstanceOf(User);
-			expect(user.id).toEqual('a3cb3416-8fcf-4719-8897-3f51767a578d');
-			expect(user.name).toEqual(userData.name);
-			expect(user.email).toEqual(userData.email);
-			expect(user).toHaveProperty('password');
+			try {
+				expect.assertions(5);
+				let userData = {
+					name: 'test user',
+					password: 'test',
+					email: 'testuser@example.com',
+				};
+				jest.spyOn(db, 'query').mockResolvedValueOnce({
+					rows: [{ ...userData, id: 'a3cb3416-8fcf-4719-8897-3f51767a578d' }],
+				});
+				const user = await User.create(userData);
+				expect(user).toBeInstanceOf(User);
+				expect(user.id).toEqual('a3cb3416-8fcf-4719-8897-3f51767a578d');
+				expect(user.name).toEqual(userData.name);
+				expect(user.email).toEqual(userData.email);
+				expect(user).toHaveProperty('password');
+			} catch (err) {
+				console.log(err);
+			}
 		});
 
 		it('rejects with error on failed db query', async () => {
@@ -51,22 +55,26 @@ describe('User model', () => {
 		});
 
 		it('resolves with user on successful db query', async () => {
-			expect.assertions(5);
-			let userData = {
-				id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
-				name: 'test user',
-				password: 'test',
-				email: 'testuser@example.com',
-			};
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [userData],
-			});
-			const user = await User.show(userData.id);
-			expect(user).toBeInstanceOf(User);
-			expect(user.id).toEqual(userData.id);
-			expect(user.name).toEqual(userData.name);
-			expect(user.email).toEqual(userData.email);
-			expect(user.password).toEqual(userData.password);
+			try {
+				expect.assertions(5);
+				let userData = {
+					id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
+					name: 'test user',
+					password: 'test',
+					email: 'testuser@example.com',
+				};
+				jest.spyOn(db, 'query').mockResolvedValueOnce({
+					rows: [userData],
+				});
+				const user = await User.show(userData.id);
+				expect(user).toBeInstanceOf(User);
+				expect(user.id).toEqual(userData.id);
+				expect(user.name).toEqual(userData.name);
+				expect(user.email).toEqual(userData.email);
+				expect(user.password).toEqual(userData.password);
+			} catch (err) {
+				console.log(err);
+			}
 		});
 
 		it('rejects with error message on invalid id', async () => {
@@ -86,22 +94,26 @@ describe('User model', () => {
 		});
 
 		it('resolves with user on successful db query', async () => {
-			expect.assertions(5);
-			let userData = {
-				id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
-				name: 'test user',
-				password: 'test',
-				email: 'testuser@example.com',
-			};
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [userData],
-			});
-			const user = await User.findByEmail(userData.id);
-			expect(user).toBeInstanceOf(User);
-			expect(user.id).toEqual(userData.id);
-			expect(user.name).toEqual(userData.name);
-			expect(user.email).toEqual(userData.email);
-			expect(user.password).toEqual(userData.password);
+			try {
+				expect.assertions(5);
+				let userData = {
+					id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
+					name: 'test user',
+					password: 'test',
+					email: 'testuser@example.com',
+				};
+				jest.spyOn(db, 'query').mockResolvedValueOnce({
+					rows: [userData],
+				});
+				const user = await User.findByEmail(userData.id);
+				expect(user).toBeInstanceOf(User);
+				expect(user.id).toEqual(userData.id);
+				expect(user.name).toEqual(userData.name);
+				expect(user.email).toEqual(userData.email);
+				expect(user.password).toEqual(userData.password);
+			} catch (err) {
+				console.log(err);
+			}
 		});
 
 		it('rejects with error message on invalid email', async () => {
@@ -121,13 +133,17 @@ describe('User model', () => {
 		});
 
 		it('resolves with true on successful db query', async () => {
-			expect.assertions(1);
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [{ id: 'test' }],
-			});
-			const user = new User({ id: 'test' });
-			const result = await user.destroy();
-			expect(result).toBe(true);
+			try {
+				expect.assertions(1);
+				jest.spyOn(db, 'query').mockResolvedValueOnce({
+					rows: [{ id: 'test' }],
+				});
+				const user = new User({ id: 'test' });
+				const result = await user.destroy();
+				expect(result).toBe(true);
+			} catch (err) {
+				console.log(err);
+			}
 		});
 	});
 
@@ -137,22 +153,26 @@ describe('User model', () => {
 		});
 
 		it('resolves with updated user on successful db query', async () => {
-			expect.assertions(1);
-			let userData = {
-				id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
-				name: 'test user',
-				password: 'test',
-				email: 'testuser@example.com',
-			};
-			jest.spyOn(db, 'query').mockResolvedValueOnce({
-				rows: [{ ...userData, password: 'updated' }],
-			});
-			const user = new User(userData);
-			const result = await user.update('updated');
-			expect(result).toBe(true);
+			try {
+				expect.assertions(1);
+				let userData = {
+					id: 'a3cb3416-8fcf-4719-8897-3f51767a578d',
+					name: 'test user',
+					password: 'test',
+					email: 'testuser@example.com',
+				};
+				jest.spyOn(db, 'query').mockResolvedValueOnce({
+					rows: [{ ...userData, password: 'updated' }],
+				});
+				const user = new User(userData);
+				const result = await user.update('updated');
+				expect(result).toBe(true);
+			} catch (err) {
+				console.log(err);
+			}
 		});
 
-		it.each([null, '', 123])('rejects with error message on invalid password', (password) => {
+		it.each([null, '', 123])('rejects with error message on invalid password', async (password) => {
 			try {
 				expect.assertions(1);
 				let userData = {
@@ -162,7 +182,7 @@ describe('User model', () => {
 					email: 'testuser@example.com',
 				};
 				const user = new User(userData);
-				user.update(password);
+				await user.update(password);
 			} catch (err) {
 				expect(err.message).toBe('Invalid argument for new password');
 			}
