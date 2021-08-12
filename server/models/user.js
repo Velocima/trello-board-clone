@@ -2,10 +2,11 @@ const db = require('../dbConfig/config');
 const { v4: uuid } = require('uuid');
 
 class User {
-	constructor({ name, email, id }) {
+	constructor({ name, email, id, password }) {
 		this.name = name;
 		this.email = email;
 		this.id = id;
+		this.password = password;
 	}
 
 	static create({ name, email, password }) {
@@ -48,7 +49,6 @@ class User {
 				const userData = await db.query('SELECT id, name, email FROM users WHERE email = $1;', [
 					email,
 				]);
-				console.log(userData.rows);
 				if (userData.rows.length !== 1) {
 					throw new Error('User not found');
 				}
