@@ -58,7 +58,7 @@ describe('Users controller', () => {
 				mockRes
 			);
 			expect(mockStatus).toHaveBeenCalledWith(200);
-			expect(mockSend).toHaveBeenCalledWith(testUser);
+			expect(mockSend).toHaveBeenCalledWith({ user: testUser });
 		});
 
 		it('returns error message with a 404 status code for invalid id', async () => {
@@ -116,12 +116,15 @@ describe('Users controller', () => {
 			password: 'password',
 		};
 		const { name, email, password } = newUserData;
+		const id = 'd939bc6e-495d-457a-a997-aab91c4e080a';
 
 		it('returns a user with a 200 status code for valid id', async () => {
-			jest.spyOn(User, 'create').mockResolvedValueOnce(new User(newUserData));
+			jest.spyOn(User, 'create').mockResolvedValueOnce(new User({ ...newUserData, id }));
 			await usersController.create({ body: newUserData }, mockRes);
 			expect(mockStatus).toHaveBeenCalledWith(201);
-			expect(mockSend).toHaveBeenCalled(testUser);
+			expect(mockSend).toHaveBeenCalled({
+				user: { name: newUserData.name, id, email: newUserData.email },
+			});
 		});
 
 		it.each([
