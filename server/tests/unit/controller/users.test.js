@@ -34,7 +34,7 @@ describe('Users controller', () => {
 			jest.spyOn(User, 'show').mockResolvedValueOnce(new User({ ...testUser, password }));
 			await usersController.show({ params: { id: testUser.id } }, mockRes);
 			expect(mockStatus).toHaveBeenCalledWith(200);
-			expect(mockSend).toHaveBeenCalledWith(testUser);
+			expect(mockSend).toHaveBeenCalledWith({ user: { ...testUser } });
 		});
 
 		it('returns error message with a 404 status code for invalid id', async () => {
