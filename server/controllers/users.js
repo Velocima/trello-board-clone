@@ -42,4 +42,21 @@ async function update(req, res) {
 	}
 }
 
-module.exports = { show, update };
+async function destroy(req, res) {
+	try {
+		const { id } = req.params;
+		const user = await User.show(id);
+		const result = await user.destroy();
+		if (!result) {
+			throw new Error('Unable to destroy');
+		}
+		res.status(204).send();
+	} catch (err) {
+		if ((err.message = 'User not found')) {
+			res.status(404).send({ error: err.message });
+		}
+		res.status(500).send();
+	}
+}
+
+module.exports = { show, update, destroy };
