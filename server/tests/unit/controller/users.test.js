@@ -143,15 +143,21 @@ describe('Users controller', () => {
 			jest.clearAllMocks();
 		});
 
-		const body = { ...testUser, password };
+		let testUser = {
+			name: 'test user 1',
+			email: 'testuser1@example.com',
+			id: 'd939bc6e-495d-457a-a997-aab91c4e080a',
+		};
+
+		const body = { email: testUser.email, password };
 
 		it('returns a user with a 200 status code for valid id', async () => {
 			jest.spyOn(User, 'findByEmail').mockResolvedValueOnce(new User(testUser));
 			jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true);
 			jest.spyOn(jwt, 'sign').mockResolvedValueOnce('token');
 			await usersController.login({ body }, mockRes);
-			expect(mockStatus).toHaveBeenCalledWith(201);
-			expect(mockSend).toHaveBeenCalled({ ok: true, token: 'Bearer token' });
+			expect(mockStatus).toHaveBeenCalledWith(200);
+			expect(mockSend).toHaveBeenCalledWith({ ok: true, token: 'Bearer token' });
 		});
 
 		it('returns error message with a 404 status code for invalid email', async () => {

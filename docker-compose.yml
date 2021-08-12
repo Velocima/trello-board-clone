@@ -15,6 +15,7 @@ services:
       - PGPASSWORD=secretpassword
       - PGDATABASE=kanban
       - PGPORT=5432
+      - JWT_SECRET=supersecretjwt
   db:
     image: postgres:latest
     environment:
