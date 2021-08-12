@@ -80,7 +80,7 @@ describe('User model', () => {
 		it('rejects with error message on invalid id', async () => {
 			try {
 				expect.assertions(1);
-				jest.spyOn(db, 'query').mockRejectedValueOnce({ rows: [] });
+				jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
 				const data = await User.show('test');
 			} catch (err) {
 				expect(err.message).toEqual('User not found');
@@ -119,7 +119,7 @@ describe('User model', () => {
 		it('rejects with error message on invalid email', async () => {
 			try {
 				expect.assertions(1);
-				jest.spyOn(db, 'query').mockRejectedValueOnce({ rows: [] });
+				jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [] });
 				const data = await User.findByEmail('invalid@example.com');
 			} catch (err) {
 				expect(err.message).toEqual('User not found');
