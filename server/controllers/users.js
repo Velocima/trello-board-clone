@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 async function show(req, res) {
 	try {
@@ -59,4 +60,30 @@ async function destroy(req, res) {
 	}
 }
 
-module.exports = { show, update, destroy };
+async function create(req, res) {
+	try {
+		const { name, email, password } = req.body;
+		if (!name || !email || !password) {
+			throw new Error('Invalid body data');
+		}
+		const salt = await bcrypt.genSalt();
+		const hash = await bcrypt.hash(password, salt);
+		const user = await User.create({ name, email, password: hash });
+		const response = {
+			user: {
+				id: user.id,
+				name: user.name,
+				email: user.email,
+			},
+		};
+		res.status(201).send(response);
+	} catch (err) {
+		if (err.message === 'Invalid body data') {
+			res.status(400).send({ error: err.message });
+			return;
+		}
+		res.status(500).send();
+	}
+}
+
+module.exports = { show, update, destroy, create };

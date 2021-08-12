@@ -122,7 +122,7 @@ describe('Users controller', () => {
 			jest.spyOn(User, 'create').mockResolvedValueOnce(new User({ ...newUserData, id }));
 			await usersController.create({ body: newUserData }, mockRes);
 			expect(mockStatus).toHaveBeenCalledWith(201);
-			expect(mockSend).toHaveBeenCalled({
+			expect(mockSend).toHaveBeenCalledWith({
 				user: { name: newUserData.name, id, email: newUserData.email },
 			});
 		});
