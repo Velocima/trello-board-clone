@@ -42,6 +42,24 @@ class User {
 		});
 	}
 
+	static findByEmail(email) {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const userData = await db.query('SELECT id, name, email FROM users WHERE email = $1;', [
+					email,
+				]);
+				console.log(userData.rows);
+				if (userData.rows.length !== 1) {
+					throw new Error('User not found');
+				}
+				const user = new User(userData.rows[0]);
+				resolve(user);
+			} catch (err) {
+				reject(err);
+			}
+		});
+	}
+
 	destroy() {
 		return new Promise(async (resolve, reject) => {
 			try {
