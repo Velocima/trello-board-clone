@@ -46,6 +46,7 @@ class User {
 		return new Promise(async (resolve, reject) => {
 			try {
 				await db.query('DELETE * FROM users WHERE id = $1;');
+				resolve(true);
 			} catch (err) {
 				reject(err);
 			}
@@ -55,10 +56,10 @@ class User {
 	update(password) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				const userData = db.query('UPDATE users SET password = $1 WHERE id = $2 RETURNING id;', [
-					password,
-					this.id,
-				]);
+				const userData = await db.query(
+					'UPDATE users SET password = $1 WHERE id = $2 RETURNING id;',
+					[password, this.id]
+				);
 				if (userData.rows[0].id !== this.id) {
 					throw new Error('Unable to update');
 				}
