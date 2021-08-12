@@ -53,7 +53,7 @@ describe('Users controller', () => {
 		it('returns a user with a 200 status code for valid id', async () => {
 			jest.spyOn(User, 'show').mockResolvedValueOnce(new User({ ...testUser, password }));
 			jest.spyOn(User.prototype, 'update').mockResolvedValueOnce(true);
-			await usersController.show(
+			await usersController.update(
 				{ params: { id: testUser.id }, body: { password: 'newpassword' } },
 				mockRes
 			);
@@ -63,7 +63,7 @@ describe('Users controller', () => {
 
 		it('returns error message with a 404 status code for invalid id', async () => {
 			jest.spyOn(User, 'show').mockRejectedValueOnce(new Error('User not found'));
-			await usersController.show(
+			await usersController.update(
 				{ params: { id: testUser.id }, body: { password: 'newpassword' } },
 				mockRes
 			);
@@ -77,7 +77,7 @@ describe('Users controller', () => {
 			{ params: { id: testUser.id }, body: { password: '' } },
 		])('returns error message with a 400 status code for invalid body', async (reqBody) => {
 			jest.spyOn(User, 'show').mockRejectedValueOnce(new Error('Invalid password'));
-			await usersController.show(reqBody, mockRes);
+			await usersController.update(reqBody, mockRes);
 			expect(mockStatus).toHaveBeenCalledWith(400);
 			expect(mockSend).toHaveBeenCalledWith({ error: 'Invalid password' });
 		});
@@ -164,7 +164,7 @@ describe('Users controller', () => {
 		it('returns error message with a 401 status code for invalid password', async () => {
 			jest.spyOn(User, 'findByEmail').mockResolvedValueOnce(new User(testUser));
 			jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(false);
-			await usersController.create({ body }, mockRes);
+			await usersController.login({ body }, mockRes);
 			expect(mockStatus).toHaveBeenCalledWith(401);
 			expect(mockSend).toHaveBeenCalledWith({ error: 'Password or email incorrect' });
 		});
