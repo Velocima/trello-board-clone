@@ -121,14 +121,14 @@ describe('User endpoints', () => {
 
 		it('should return status 201 user information', (done) => {
 			request(api)
-				.post('/users/')
+				.post('/users/register')
 				.send(newUserData)
 				.set('Content-Type', 'application/json')
 				.expect('Content-Type', /json/)
 				.expect(201)
 				.expect((res) => {
-					if (validate(res.body.id)) {
-						res.body.id = true;
+					if (validate(res.body.user.id)) {
+						res.body.user.id = true;
 					}
 				})
 				.expect({ user: { name, id: true, email } }, done);
@@ -144,7 +144,7 @@ describe('User endpoints', () => {
 				.send(userData)
 				.set('Content-Type', 'application/json')
 				.expect(400)
-				.expect({ error: 'Missing required user data' }, done);
+				.expect({ error: 'Invalid body data' }, done);
 		});
 	});
 
