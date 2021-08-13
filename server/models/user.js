@@ -64,7 +64,7 @@ class User {
 	destroy() {
 		return new Promise(async (resolve, reject) => {
 			try {
-				await db.query('DELETE * FROM users WHERE id = $1;');
+				await db.query('DELETE FROM users WHERE id = $1;', [this.id]);
 				resolve(true);
 			} catch (err) {
 				reject(err);

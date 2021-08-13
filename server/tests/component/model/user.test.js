@@ -94,9 +94,16 @@ describe('User model', () => {
 			await resetTestDB();
 		});
 
+		const userData = {
+			id: 'd939bc6e-495d-457a-a997-aab91c4e080a',
+			name: 'test user 1',
+			email: 'testuser1@example.com',
+			password: '$2a$04$1zezalVLhbbA.jBhdlMkm.JmR9eniEtFblJd3I3w05RUf0MmiLMh.',
+		};
+
 		it('resolves true on success', async () => {
 			expect.assertions(1);
-			const user = await User.show('d939bc6e-495d-457a-a997-aab91c4e080a');
+			const user = new User(userData);
 			const result = await user.destroy();
 			expect(result).toBe(true);
 		});
