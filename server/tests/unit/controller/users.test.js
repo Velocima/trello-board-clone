@@ -3,9 +3,6 @@ const usersController = require('../../../controllers/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-jest.mock('bcrypt');
-jest.mock('jsonwebtoken');
-
 jest.mock('../../../middleware/auth', () => jest.fn((req, res, next) => next()));
 
 const mockSend = jest.fn();
@@ -147,9 +144,10 @@ describe('Users controller', () => {
 			name: 'test user 1',
 			email: 'testuser1@example.com',
 			id: 'd939bc6e-495d-457a-a997-aab91c4e080a',
+			password: 'test1',
 		};
 
-		const body = { email: testUser.email, password };
+		const body = { email: testUser.email, password: testUser.password };
 
 		it('returns a user with a 200 status code for valid id', async () => {
 			jest.spyOn(User, 'findByEmail').mockResolvedValueOnce(new User(testUser));

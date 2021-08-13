@@ -98,6 +98,7 @@ async function login(req, res) {
 		const user = await User.findByEmail(email);
 		const authed = await bcrypt.compare(password, user.password);
 
+		console.log('authed', authed);
 		if (!authed) {
 			throw new Error('Password or email incorrect');
 		}
@@ -109,6 +110,7 @@ async function login(req, res) {
 
 		res.status(200).send({ ok: true, token: `Bearer ${token}` });
 	} catch (err) {
+		console.log(err.message);
 		switch (err.message) {
 			case 'Missing body data':
 				res.status(400).send({ error: err.message });
