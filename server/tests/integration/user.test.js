@@ -168,14 +168,10 @@ describe('User endpoints', () => {
 				.expect({ token: true, ok: true }, done);
 		});
 
-		it.each([
-			{ email: 'wrongemail@example.com', password: 'test1' },
-			{ email: testUser.email, password: 'wrongpassword' },
-			{},
-		])('should return 401 for invalid email or password', (loginData, done) => {
+		it('should return 401 for invalid password', (done) => {
 			request(api)
 				.post('/users/login')
-				.send(loginData)
+				.send({ email: testUser.email, password: 'wrongpassword' })
 				.set('Content-Type', 'application/json')
 				.expect(401)
 				.expect({ error: 'Password or email incorrect' }, done);
