@@ -34,7 +34,7 @@ describe('User model', () => {
 				expect.assertions(1);
 				const data = await User.create(userData);
 			} catch (err) {
-				expect(err.message).toEqual('User could not be created');
+				expect(err.message).toEqual('Missing required data');
 			}
 		});
 	});

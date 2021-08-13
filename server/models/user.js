@@ -12,6 +12,9 @@ class User {
 	static create({ name, email, password }) {
 		return new Promise(async (resolve, reject) => {
 			try {
+				if (!name || !email || !password) {
+					throw new Error('Missing required data');
+				}
 				const id = uuid();
 				const userData = await db.query(
 					'INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4) RETURNING name, email, id;',
