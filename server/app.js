@@ -11,4 +11,7 @@ app.get('/', (req, res) => {
 	res.status(200).send({ message: 'Hello world!' });
 });
 
+const usersRouter = require('./routes/users');
+app.use('/users', usersRouter);
+
 module.exports = app;
