@@ -15,14 +15,17 @@ describe('User model', () => {
 			jest.clearAllMocks();
 		});
 
+		let userData = {
+			name: 'test user',
+			password: 'test',
+			email: 'testuser@example.com',
+		};
+
+		const { name, password, email } = userData;
+
 		it('resolves with user on successful db query', async () => {
 			try {
 				expect.assertions(5);
-				let userData = {
-					name: 'test user',
-					password: 'test',
-					email: 'testuser@example.com',
-				};
 				jest.spyOn(db, 'query').mockResolvedValueOnce({
 					rows: [{ ...userData, id: 'a3cb3416-8fcf-4719-8897-3f51767a578d' }],
 				});
@@ -40,11 +43,23 @@ describe('User model', () => {
 		it('rejects with error on failed db query', async () => {
 			try {
 				expect.assertions(1);
-				let userData = {};
 				jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('User could not be created'));
 				const data = await User.create(userData);
 			} catch (err) {
 				expect(err.message).toEqual('User could not be created');
+			}
+		});
+
+		it.each([
+			{ name, email },
+			{ name, password },
+			{ password, email },
+		])('rejects with error when missing data', async (invalidUserData) => {
+			try {
+				expect.assertions(1);
+				const data = await User.create(invalidUserData);
+			} catch (err) {
+				expect(err.message).toEqual('Missing required data');
 			}
 		});
 	});
