@@ -1,4 +1,5 @@
 const { validate } = require('uuid');
+const jwt = require('jsonwebtoken');
 
 describe('User endpoints', () => {
 	let api;
@@ -9,7 +10,14 @@ describe('User endpoints', () => {
 		id: 'd939bc6e-495d-457a-a997-aab91c4e080a',
 	};
 
-	beforeAll(() => {
+	let token;
+
+	beforeAll(async () => {
+		token = await jwt.sign(
+			{ id: testUser.id, name: testUser.name, email: testUser.email },
+			process.env.JWT_SECRET,
+			{ expiresIn: 86400 }
+		);
 		api = app.listen(3000, () => console.log('Test server running on port 3000'));
 	});
 
@@ -26,13 +34,18 @@ describe('User endpoints', () => {
 		it('should return status 200 with user information', (done) => {
 			request(api)
 				.get(`/users/${testUser.id}`)
+				.set({ Authorization: `Bearer ${token}` })
 				.expect('Content-Type', /json/)
-				.expect(200)
-				.expect({ user: testUser }, done);
+				.expect({ user: testUser })
+				.expect(200, done);
 		});
 
 		it('should return 404 for invalid id', (done) => {
-			request(api).get('/users/1').expect(404).expect({ error: 'User not found' }, done);
+			request(api)
+				.get('/users/1')
+				.set({ Authorization: `Bearer ${token}` })
+				.expect(404)
+				.expect({ error: 'User not found' }, done);
 		});
 	});
 
@@ -45,6 +58,7 @@ describe('User endpoints', () => {
 			request(api)
 				.put(`/users/${testUser.id}`)
 				.send({ password: 'new password' })
+				.set({ Authorization: `Bearer ${token}` })
 				.set('Content-Type', 'application/json')
 				.expect('Content-Type', /json/)
 				.expect(200)
@@ -54,19 +68,21 @@ describe('User endpoints', () => {
 		it('should return 404 for invalid id', (done) => {
 			request(api)
 				.put('/users/1')
-				.send({ password: 'new password' })
+				.send({ password: 'updated' })
+				.set({ Authorization: `Bearer ${token}` })
 				.set('Content-Type', 'application/json')
 				.expect(404)
 				.expect({ error: 'User not found' }, done);
 		});
 
-		it('should return 400 for invalid password', (done) => {
+		it('should return 401 for invalid password', (done) => {
 			request(api)
-				.put('/users/1')
-				.send()
+				.put(`/users/${testUser.id}`)
+				.send({ password: null })
+				.set({ Authorization: `Bearer ${token}` })
 				.set('Content-Type', 'application/json')
 				.expect(400)
-				.expect({ error: 'Invalid new password' }, done);
+				.expect({ error: 'Invalid argument for new password' }, done);
 		});
 	});
 
@@ -76,11 +92,18 @@ describe('User endpoints', () => {
 		});
 
 		it('should return status 204', (done) => {
-			request(api).delete(`/users/${testUser.id}`).expect(204, done);
+			request(api)
+				.delete(`/users/${testUser.id}`)
+				.set({ Authorization: `Bearer ${token}` })
+				.expect(204, done);
 		});
 
 		it('should return 404 for invalid id', (done) => {
-			request(api).delete('/users/1').expect(404).expect({ error: 'User not found' }, done);
+			request(api)
+				.delete('/users/1')
+				.set({ Authorization: `Bearer ${token}` })
+				.expect(404)
+				.expect({ error: 'User not found' }, done);
 		});
 	});
 
