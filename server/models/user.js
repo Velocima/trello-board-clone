@@ -34,7 +34,7 @@ class User {
 	static show(id) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				const userData = await db.query('SELECT id, name, email FROM users WHERE id = $1;', [id]);
+				const userData = await db.query('SELECT * FROM users WHERE id = $1;', [id]);
 				if (userData.rows.length !== 1) {
 					throw new Error('User not found');
 				}
@@ -49,9 +49,7 @@ class User {
 	static findByEmail(email) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				const userData = await db.query('SELECT id, name, email FROM users WHERE email = $1;', [
-					email,
-				]);
+				const userData = await db.query('SELECT * FROM users WHERE email = $1;', [email]);
 				if (userData.rows.length !== 1) {
 					throw new Error('User not found');
 				}
